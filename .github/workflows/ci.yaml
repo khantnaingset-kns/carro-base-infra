@@ -1,0 +1,21 @@
+name: "Terraform Change Management Pipeline"
+
+on:
+  push:
+    branches:
+      - main
+      - features/**
+  pull_request:
+    branches:
+        - main
+        - features/**
+
+jobs:
+  terraform:
+    name: "Test"
+    runs-on: ubuntu-latest
+    
+    steps:
+        - name: "Testing"
+          id: "testing"
+          run: echo "Hello Testing"
