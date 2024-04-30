@@ -6,19 +6,35 @@ on:
       env:
         required: true
         type: string
-    secrets:
-      AWS_ACCESS_KEY_ID:
+      bucket_name:
         required: true
-      AWS_SECRET_ACCESS_KEY:
+        type: string
+      bucket_key:
+        required: true
+        type: string
+      lock_dynamodb_name:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+    secrets:
+      aws_access_key_id:
+        required: true
+      aws_secret_key_id:
         required: true
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  
+  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
+  BUCKET_NAME: ${{ inputs.bucket_name }}
+  BUCKET_KEY: ${{ inputs.bucket_key }}
+  LOCK_DYNAMODB_NAME: ${{ inputs.lock_dynamodb_name }}
+  REGION: ${{ inputs.region }}
+
 jobs:
   terraform:
-    name: "Test & Plan"
+    name: "Terraform ${{inputs.dev}} Test & Plan"
     if: ${{ inputs.env == 'dev'  }}
     runs-on: ubuntu-latest
     defaults:
@@ -29,19 +45,17 @@ jobs:
       - name: Checkout the code to the runner
         uses: actions/checkout@v4
 
-      - run: echo ${{ secrets.AWS_ACCESS_KEY_ID }}
-
       - name: Setup Terraform
         id: setup
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.8.2"
-      
+
       - name: Init Terraform
         id: init
-        run: > 
-         terraform init 
-         -backend-config="bucket=kns-terraform-remote-state-store" 
-         -backend-config="key=carro-infra-state" 
-         -backend-config="region=us-east-1" 
-         -backend-config="dynamodb_table=terraform-state-lock-db" 
+        run: >
+          terraform init 
+          -backend-config="bucket=kns-terraform-remote-state-store" 
+          -backend-config="key=carro-infra-state" 
+          -backend-config="region=us-east-1" 
+          -backend-config="dynamodb_table=terraform-state-lock-db"
