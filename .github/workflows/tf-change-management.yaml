@@ -9,7 +9,7 @@ on:
 
 jobs:
   terraform:
-    if: ${{ github.event.inputs.env == 'dev' || github.event.inputs.env == 'uat' || github.event.inputs.env == 'prod'  }}
+    if: ${{ inputs.env == 'dev'  }}
     name: "Terraform"
     runs-on: ubuntu-latest
 
