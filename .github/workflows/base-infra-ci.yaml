@@ -24,6 +24,7 @@ jobs:
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   
   terraform_env_uat:
+    needs: [terraform_env_dev]
     name: "TF UAT Environment"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
