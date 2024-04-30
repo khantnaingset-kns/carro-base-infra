@@ -9,15 +9,28 @@ on:
 
 jobs:
   terraform:
+    name: "Test & Plan"
     if: ${{ inputs.env == 'dev'  }}
-    name: "Terraform"
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./base-infra/${{inputs.env}}
 
     steps:
-      - uses: actions/checkout@v4
-      - name: "Testing"
-        id: "testing"
-        run: echo "Hello Testing"
+      - name: Checkout the code to the runner
+        uses: actions/checkout@v4
+
+
+      - name: Setup Terraform
+        id: setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.2"
+      
+      - name: Init Terraform
+        id: init
+        run: terraform init \
+          -backend-config="bucket=$BUCKET_NAME" \
+          -backend-config="key=$BUCKET_KEY" \
+          -backend-config="region=$REGION" \
+          -backend-config="dynamodb_table=$LOCK_DYNAMODB_NAME"
