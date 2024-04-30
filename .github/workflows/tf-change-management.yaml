@@ -34,7 +34,7 @@ env:
 
 jobs:
   terraform:
-    name: "Terraform ${{inputs.dev}} Test & Plan"
+    name: "Terraform Test & Plan"
     if: ${{ inputs.env == 'dev'  }}
     runs-on: ubuntu-latest
     defaults:
