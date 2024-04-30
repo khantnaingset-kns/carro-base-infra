@@ -35,7 +35,7 @@ env:
 jobs:
   terraform:
     name: "Terraform Test & Plan"
-    if: ${{ inputs.env == 'dev' || inputs.env == 'uat'  }}
+    if: ${{ inputs.env == 'dev' || inputs.env == 'uat' || inputs.env == 'prod'  }}
     runs-on: ubuntu-latest
     defaults:
       run:
