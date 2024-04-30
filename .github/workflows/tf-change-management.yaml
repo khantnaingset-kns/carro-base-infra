@@ -55,7 +55,7 @@ jobs:
         id: init
         run: >
           terraform init 
-          -backend-config="bucket=kns-terraform-remote-state-store" 
-          -backend-config="key=carro-infra-state" 
-          -backend-config="region=us-east-1" 
-          -backend-config="dynamodb_table=terraform-state-lock-db"
+          -backend-config="bucket=$BUCKET_NAME" 
+          -backend-config="key=$BUCKET_KEY" 
+          -backend-config="region=$REGION" 
+          -backend-config="dynamodb_table=$LOCK_DYNAMODB_NAME"
