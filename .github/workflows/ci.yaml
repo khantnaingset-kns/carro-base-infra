@@ -1,4 +1,4 @@
-name: "Terraform Change Management Pipeline"
+name: Terraform CI
 
 on:
   push:
@@ -7,15 +7,9 @@ on:
       - features/**
   pull_request:
     branches:
-        - main
-        - features/**
+      - main
+      - features/**
 
 jobs:
-  terraform:
-    name: "Test"
-    runs-on: ubuntu-latest
-    
-    steps:
-        - name: "Testing"
-          id: "testing"
-          run: echo "Hello Testing"
+  test_and_validate:
+    uses: ./.github/workflows/tf_change_management.yaml

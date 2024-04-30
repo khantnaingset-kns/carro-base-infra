@@ -1,0 +1,14 @@
+name: "Terraform Change Management Pipeline"
+
+on:
+  workflow_call:
+
+jobs:
+  terraform:
+    name: "Test"
+    runs-on: ubuntu-latest
+    
+    steps:
+        - name: "Testing"
+          id: "testing"
+          run: echo "Hello Testing"
