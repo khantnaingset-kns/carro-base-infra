@@ -11,5 +11,5 @@ on:
       - features/**
 
 jobs:
-  test_and_validate:
+  terraform:
     uses: ./.github/workflows/tf_change_management.yaml
