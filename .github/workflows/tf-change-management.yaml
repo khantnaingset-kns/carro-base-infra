@@ -29,7 +29,7 @@ jobs:
       
       - run: tree
 
-      - run: echo $BUCKET_NAME
+      - run: echo "$BUCKET_NAME"
       
       - name: Init Terraform
         id: init
