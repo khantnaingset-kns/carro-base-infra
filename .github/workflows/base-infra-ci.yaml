@@ -9,6 +9,14 @@ on:
     paths:
       - base-infra/**
 
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  BUCKET_NAME: ${{ vars.BUCKET_NAME }}
+  BUCKET_KEY: ${{ vars.BUCKET_KEY }}
+  LOCK_DYNAMODB_NAME: ${{ vars.LOCK_DYNAMODB_NAME }}
+  REGION: ${{ vars.REGION }}
+
 
 jobs:
   terraform:
@@ -16,3 +24,5 @@ jobs:
     uses: ./.github/workflows/tf-change-management.yaml
     with:
       env: "dev"
+      AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
