@@ -1,4 +1,4 @@
 project_name = "carro"
-vpc_name     = "main-vpc"
+vpc_name     = "primary-vpc"
 environment  = "dev"
 region       = "us-east-1"
