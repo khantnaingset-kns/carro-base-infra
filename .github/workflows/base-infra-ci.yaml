@@ -24,7 +24,6 @@ jobs:
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   
   terraform_env_uat:
-    needs: [terraform_env_dev]
     name: "TF UAT Environment"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
@@ -36,4 +35,17 @@ jobs:
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+  terraform_env_prod:
+    name: "TF PROD Environment"
+    uses: ./.github/workflows/tf-change-management.yaml
+    with:
+      env: "prod"
+      bucket_name: ${{ vars.BUCKET_NAME }}
+      bucket_key: ${{ vars.BUCKET_KEY }}
+      lock_dynamodb_name: ${{ vars.LOCK_DYNAMODB_NAME }}
+      region: ${{ vars.REGION }}
+    secrets:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   
