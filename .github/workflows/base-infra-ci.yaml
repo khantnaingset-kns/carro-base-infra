@@ -14,3 +14,7 @@ jobs:
   terraform:
     name: "Terraform"
     uses: ./.github/workflows/tf-change-management.yaml
+    with:
+      env: "dev"
+
+    

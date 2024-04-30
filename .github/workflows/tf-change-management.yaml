@@ -2,13 +2,19 @@ name: "Terraform Change Management Pipeline"
 
 on:
   workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
 
 jobs:
   terraform:
-    name: "Test"
+    if: ${{ github.event.inputs.env == 'dev' || github.event.inputs.env == 'uat' || github.event.inputs.env == 'prod'  }}
+    name: "Terraform"
     runs-on: ubuntu-latest
-    
+
     steps:
-        - name: "Testing"
-          id: "testing"
-          run: echo "Hello Testing"
+      - uses: actions/checkout@v4
+      - name: "Testing"
+        id: "testing"
+        run: echo "Hello Testing"
