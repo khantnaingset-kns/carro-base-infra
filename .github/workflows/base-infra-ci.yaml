@@ -20,5 +20,5 @@ jobs:
       lock_dynamodb_name: ${{ vars.LOCK_DYNAMODB_NAME }}
       region: ${{ vars.REGION }}
     secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
