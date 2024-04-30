@@ -28,6 +28,8 @@ jobs:
           terraform_version: "1.8.2"
       
       - run: tree
+
+      - run: echo $BUCKET_NAME
       
       - name: Init Terraform
         id: init
