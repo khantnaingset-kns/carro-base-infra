@@ -13,4 +13,4 @@ on:
 jobs:
   terraform:
     name: "Terraform"
-    uses: ./.github/workflows/tf_change_management.yaml
+    uses: ./.github/workflows/tf-change-management.yaml
