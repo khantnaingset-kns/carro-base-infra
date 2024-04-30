@@ -25,6 +25,7 @@ jobs:
       - name: Checkout the code to the runner
         uses: actions/checkout@v4
 
+      - run: echo ${{ secrets.AWS_ACCESS_KEY_ID }}
 
       - name: Setup Terraform
         id: setup
