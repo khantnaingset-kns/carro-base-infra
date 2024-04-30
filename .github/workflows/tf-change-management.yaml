@@ -12,6 +12,9 @@ jobs:
     if: ${{ inputs.env == 'dev'  }}
     name: "Terraform"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./base-infra/${{inputs.env}}
 
     steps:
       - uses: actions/checkout@v4
