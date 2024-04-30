@@ -33,8 +33,9 @@ jobs:
       
       - name: Init Terraform
         id: init
-        run: terraform init \
-         -backend-config="bucket=kns-terraform-remote-state-store" \
-         -backend-config="key=carro-infra-state" \
-         -backend-config="region=us-east-1" \
-         -backend-config="dynamodb_table=terraform-state-lock-db" \
+        run: > 
+         terraform init 
+         -backend-config="bucket=kns-terraform-remote-state-store" 
+         -backend-config="key=carro-infra-state" 
+         -backend-config="region=us-east-1" 
+         -backend-config="dynamodb_table=terraform-state-lock-db" 
