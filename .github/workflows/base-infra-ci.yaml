@@ -1,0 +1,15 @@
+name: Terraform Base Infra CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - features/**
+    paths:
+      - base-infra/**
+      
+
+jobs:
+  terraform:
+    name: "Terraform"
+    uses: ./.github/workflows/tf_change_management.yaml
