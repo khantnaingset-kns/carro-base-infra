@@ -3,7 +3,7 @@ name: "Terraform Change Management Pipeline"
 on:
   workflow_call:
     inputs:
-      env:
+      dir:
         required: true
         type: string
       bucket_name:
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./base-infra/${{inputs.env}}
+        working-directory: ./${{inputs.dir}}
 
     steps:
       - name: Checkout the code to the runner
