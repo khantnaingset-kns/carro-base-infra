@@ -10,8 +10,8 @@ on:
       - base-infra/**
 
 jobs:
-  terraform_env_dev:
-    name: "TF Dev Environment"
+  terraform:
+    name: "Base Infra"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
       dir: "base-infra"
