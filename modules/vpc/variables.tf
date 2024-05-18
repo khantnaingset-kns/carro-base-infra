@@ -28,7 +28,7 @@ variable "public_subnets_cidr_ranges" {
 variable "private_subnets_cidr_ranges" {
   type = set(string)
   description = "List of CIDR ranges for Private Subnets"
-  default = [ "10.0.32.0/20", "10.0.128.0/20" ]
+  default = [ "10.0.32.0/20", "10.0.64.0/20" ]
 }
 
 variable "azs" {
