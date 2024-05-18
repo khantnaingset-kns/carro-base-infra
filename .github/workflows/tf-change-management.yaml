@@ -1,4 +1,4 @@
-name: "Terraform Change Management Pipeline"
+name: "Terraform CI"
 
 on:
   workflow_call:
@@ -34,7 +34,7 @@ env:
 
 jobs:
   terraform:
-    name: "Terraform Test & Plan"
+    name: "Test & Plan"
     runs-on: ubuntu-latest
     defaults:
       run:
