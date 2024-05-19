@@ -37,6 +37,7 @@ runs:
       id: init
       run: >
         terraform init
+      working-directory: ${{ github.action_path }}
 
     - name: Terraform Validate
       shell: bash
