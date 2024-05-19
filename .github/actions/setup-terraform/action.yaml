@@ -1,9 +1,6 @@
 name: "Terraform Setup"
 description: "Terraform Setup Composite Action"
 inputs:
-  working_directory:
-    description: "Working dir for Terraform"
-    required: true
   tfc_token:
     description: "TFC API Token"
     required: true
@@ -30,7 +27,7 @@ runs:
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.8.2"
-        cli_config_credentials_token: ${{ secrets.tfc_token }}
+        cli_config_credentials_token: ${{ inputs.tfc_token }}
 
     - name: Terraform Init
       shell: bash

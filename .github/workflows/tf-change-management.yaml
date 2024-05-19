@@ -25,6 +25,8 @@ jobs:
       - name: Terraform Setup
         uses: ./.github/actions/setup-terraform
         id: setup
+        with:
+          tfc_token: ${{ secrets.tfc_token }}
 
       - name: Terraform Plan
         id: plan
