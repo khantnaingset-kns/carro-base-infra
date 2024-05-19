@@ -5,11 +5,13 @@ on:
     branches:
       - main
       - dev
-    paths:
-      - base-infra/**
 
 jobs:
   terraform:
+    permissions:
+      contents: read
+      pull-requests: write
+
     name: "Base Infra"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
@@ -21,5 +23,6 @@ jobs:
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      tfc_token: ${{ secrets.TFC_API_TOKEN }}
   
   
