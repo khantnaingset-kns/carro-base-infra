@@ -6,15 +6,6 @@ on:
       dir:
         required: true
         type: string
-      bucket_name:
-        required: true
-        type: string
-      bucket_key:
-        required: true
-        type: string
-      lock_dynamodb_name:
-        required: true
-        type: string
       region:
         required: true
         type: string
@@ -29,14 +20,11 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
-  BUCKET_NAME: ${{ inputs.bucket_name }}
-  BUCKET_KEY: ${{ inputs.bucket_key }}
-  LOCK_DYNAMODB_NAME: ${{ inputs.lock_dynamodb_name }}
   REGION: ${{ inputs.region }}
 
 jobs:
   terraform:
-    name: "Test & Plan"
+    name: "TF Change Management"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -63,6 +51,11 @@ jobs:
         run: >
           terraform validate
 
+      - name: Terraform format
+        id: fmt
+        run: >
+          terraform fmt -recursive
+
       - name: Security Scan with TFSec
         id: tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
@@ -82,7 +75,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -91,32 +83,31 @@ jobs:
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
             })
-      
+
             // 2. Prepare format of the comment
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
-      
+
             \`\`\`\n
             ${{ steps.validate.outputs.stdout }}
             \`\`\`
-      
+
             </details>
-      
+
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-      
+
             <details><summary>Show Plan</summary>
-      
+
             \`\`\`\n
             ${process.env.PLAN}
             \`\`\`
-      
+
             </details>
-      
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
-      
-            // 3. If we have a comment, update it, otherwise create a new one
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
