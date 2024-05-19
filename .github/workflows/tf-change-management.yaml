@@ -1,26 +1,15 @@
-name: "Terraform CI"
+name: "Terraform Change Management"
 
 on:
   workflow_call:
     inputs:
-      dir:
-        required: true
-        type: string
-      region:
+      working_directory:
         required: true
         type: string
     secrets:
-      aws_access_key_id:
-        required: true
-      aws_secret_key_id:
-        required: true
       tfc_token:
         required: true
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
-  REGION: ${{ inputs.region }}
 
 jobs:
   terraform:
@@ -28,40 +17,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./${{inputs.dir}}
+        working-directory: ./${{inputs.working_directory}}
 
     steps:
-      - name: Checkout the code to the runner
-        uses: actions/checkout@v4
 
-      - name: Setup Terraform
+      - name: Terraform Setup
+        uses: ./.github/actions/setup-terraform
         id: setup
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.8.2"
-          cli_config_credentials_token: ${{ secrets.tfc_token }}
-
-      - name: Terraform Init
-        id: init
-        run: >
-          terraform init
-
-      - name: Terraform Validate
-        id: validate
-        run: >
-          terraform validate
-
-      - name: Terraform format
-        id: fmt
-        run: >
-          terraform fmt -recursive
-
-      - name: Security Scan with TFSec
-        id: tfsec
-        uses: aquasecurity/tfsec-action@v1.0.0
-        with:
-          soft_fail: true
-
+       
       - name: Terraform Plan
         id: plan
         run: >
@@ -85,16 +48,10 @@ jobs:
             })
 
             // 2. Prepare format of the comment
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            <details><summary>Validation Output</summary>
-
-            \`\`\`\n
-            ${{ steps.validate.outputs.stdout }}
-            \`\`\`
-
-            </details>
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.setup.outputs.init_outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.setup.outputs.validate_outcome }}\`
+            #### Terraform Security Check 🤖\`${{ steps.setup.outputs.tfsec_outcome }}\`
 
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
@@ -106,7 +63,7 @@ jobs:
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working_directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
             if (botComment) {
               github.rest.issues.updateComment({

@@ -15,7 +15,7 @@ jobs:
     name: "Base Infra"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
-      dir: "base-infra"
+      working_directory: "base-infra"
       region: ${{ vars.REGION }}
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
