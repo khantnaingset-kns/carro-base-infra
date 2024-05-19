@@ -24,8 +24,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Checkout the code to the runner
-      uses: actions/checkout@v4
 
     - name: Setup Terraform
       id: setup

@@ -10,7 +10,6 @@ on:
       tfc_token:
         required: true
 
-
 jobs:
   terraform:
     name: "TF Change Management"
@@ -20,11 +19,13 @@ jobs:
         working-directory: ./${{inputs.working_directory}}
 
     steps:
+      - name: Checkout the code to the runner
+        uses: actions/checkout@v4
 
       - name: Terraform Setup
         uses: ./.github/actions/setup-terraform
         id: setup
-       
+
       - name: Terraform Plan
         id: plan
         run: >
