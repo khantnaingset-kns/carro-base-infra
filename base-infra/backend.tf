@@ -1,5 +1,9 @@
 terraform {
-  backend "s3" {
+  cloud {
+    organization = "kns-personal"
 
+    workspaces {
+      name = "carro-infra"
+    }
   }
 }

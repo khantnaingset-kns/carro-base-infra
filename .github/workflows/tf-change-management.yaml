@@ -39,6 +39,9 @@ jobs:
     defaults:
       run:
         working-directory: ./${{inputs.dir}}
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout the code to the runner
@@ -53,11 +56,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: >
-          terraform init 
-          -backend-config="bucket=$BUCKET_NAME" 
-          -backend-config="key=$BUCKET_KEY" 
-          -backend-config="region=$REGION" 
-          -backend-config="dynamodb_table=$LOCK_DYNAMODB_NAME"
+          terraform init
 
       - name: Terraform Validate
         id: validate
