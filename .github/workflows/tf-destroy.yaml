@@ -42,12 +42,6 @@ jobs:
           tfc_token: ${{ secrets.tfc_token }}
           working_directory: ${{ inputs.working_directory }}
 
-      - name: Terraform Plan
-        id: plan
-        run: >
-          terraform plan -no-color -input=false
-        continue-on-error: false
-
       - name: Terraform Destroy
         id: apply
         run: >
