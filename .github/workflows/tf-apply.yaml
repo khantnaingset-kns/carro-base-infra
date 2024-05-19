@@ -1,4 +1,4 @@
-name: Terraform Change Management Workflow
+name: Terraform Apply Workflow
 
 on:
   workflow_call:
@@ -25,7 +25,7 @@ env:
 
 jobs:
   terraform:
-    name: "TF Change Management"
+    name: "TF Apply"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -64,7 +64,9 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
             })
 
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
+            const output =  `## <span style="color:red">Warning: Merging this PR mean it will deploy the planned resources</span>
+
+            #### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.setup.outputs.init_outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.setup.outputs.validate_outcome }}\`
             #### Terraform Security Check 🛡️\`${{ steps.setup.outputs.tfsec_outcome }}\`

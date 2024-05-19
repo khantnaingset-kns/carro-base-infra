@@ -1,10 +1,10 @@
-name: Terraform Base Infra CI
+name: Deploy Workflow
 
 on:
   pull_request:
     branches:
       - main
-      - dev
+    types: [opened, edited, reopened, synchronize]
 
 jobs:
   terraform:
@@ -12,8 +12,8 @@ jobs:
       contents: read
       pull-requests: write
 
-    name: "Base Infra"
-    uses: ./.github/workflows/tf-change-management.yaml
+    name: "CD"
+    uses: ./.github/workflows/tf-apply.yaml
     with:
       working_directory: "base-infra"
       region: ${{ vars.REGION }}
@@ -21,5 +21,3 @@ jobs:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       tfc_token: ${{ secrets.TFC_API_TOKEN }}
-  
-  
