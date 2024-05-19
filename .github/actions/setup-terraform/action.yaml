@@ -1,6 +1,9 @@
 name: "Terraform Setup"
 description: "Terraform Setup Composite Action"
 inputs:
+  working_directory:
+    description: "Working dir for Terraform"
+    required: true
   tfc_token:
     description: "TFC API Token"
     required: true
@@ -34,6 +37,7 @@ runs:
       id: init
       run: >
         terraform init
+      working-directory: ${{ inputs.working_directory }}
 
     - name: Terraform Validate
       shell: bash
