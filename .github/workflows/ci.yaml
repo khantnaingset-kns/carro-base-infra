@@ -1,0 +1,28 @@
+name: CI Workflow
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+    types: [opened, edited, reopened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    permissions:
+      contents: read
+      pull-requests: write
+
+    name: "CI"
+    uses: ./.github/workflows/tf-change-management.yaml
+    with:
+      working_directory: "base-infra"
+      region: ${{ vars.REGION }}
+    secrets:
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      tfc_token: ${{ secrets.TFC_API_TOKEN }}

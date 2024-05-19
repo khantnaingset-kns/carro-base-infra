@@ -1,0 +1,54 @@
+name: Terraform Apply Workflow
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+
+    secrets:
+      aws_access_key_id:
+        required: true
+      aws_secret_key_id:
+        required: true
+      tfc_token:
+        required: true
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
+  REGION: ${{ inputs.region }}
+
+jobs:
+  terraform:
+    name: "TF Apply"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{inputs.working_directory}}
+
+    steps:
+      - name: Checkout the code to the runner
+        uses: actions/checkout@v4
+
+      - name: Terraform Setup
+        uses: ./.github/actions/setup-terraform
+        id: setup
+        with:
+          tfc_token: ${{ secrets.tfc_token }}
+          working_directory: ${{ inputs.working_directory }}
+
+      - name: Terraform Plan
+        id: plan
+        run: >
+          terraform plan -no-color -input=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        id: apply
+        run: >
+         terraform apply --auto-approve

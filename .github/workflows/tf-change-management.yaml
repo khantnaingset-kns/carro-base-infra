@@ -1,0 +1,127 @@
+name: Terraform Change Management Workflow
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        required: true
+        type: string
+      region:
+        required: true
+        type: string
+
+    secrets:
+      aws_access_key_id:
+        required: true
+      aws_secret_key_id:
+        required: true
+      tfc_token:
+        required: true
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
+  REGION: ${{ inputs.region }}
+
+jobs:
+  terraform:
+    name: "TF Change Management"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./${{inputs.working_directory}}
+
+    steps:
+      - name: Checkout the code to the runner
+        uses: actions/checkout@v4
+
+
+      - name: Terraform Setup
+        uses: ./.github/actions/setup-terraform
+        id: setup
+        with:
+          tfc_token: ${{ secrets.tfc_token }}
+          working_directory: ${{ inputs.working_directory }}
+
+      - name: Terraform Plan
+        id: plan
+        run: >
+          terraform plan -no-color -input=false
+        continue-on-error: false
+
+      - name: Setup Warning Comment
+        uses: actions/github-script@v7
+        if: github.base_ref == 'main'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Warning: ')
+            })
+
+            const output = `## Warning: Merging this PR mean it will deploy the planned resources`
+
+
+            if (!botComment) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+      - name: Setup Plan Comments
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
+
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.setup.outputs.init_outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.setup.outputs.validate_outcome }}\`
+            #### Terraform Security Check 🛡️\`${{ steps.setup.outputs.tfsec_outcome }}\`
+
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working_directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
