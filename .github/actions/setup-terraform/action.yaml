@@ -31,28 +31,32 @@ runs:
       with:
         terraform_version: "1.8.2"
         cli_config_credentials_token: ${{ inputs.tfc_token }}
+  
 
     - name: Terraform Init
       shell: bash
       id: init
       run: >
         terraform init
-      working-directory: ${{ inputs.working_directory }}
+      working-directory:  ${{ inputs.working_directory }}
 
     - name: Terraform Validate
       shell: bash
       id: validate
       run: >
         terraform validate
+      working-directory:  ${{ inputs.working_directory }}
 
     - name: Terraform format
       shell: bash
       id: fmt
       run: >
         terraform fmt -recursive
+      
 
     - name: Security Scan with TFSec
       id: tfsec
       uses: aquasecurity/tfsec-action@v1.0.0
       with:
         soft_fail: true
+      
