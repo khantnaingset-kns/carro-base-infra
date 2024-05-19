@@ -15,10 +15,7 @@ jobs:
     name: "Base Infra"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
-      dir: "base-infra"
-      bucket_name: ${{ vars.BUCKET_NAME }}
-      bucket_key: ${{ vars.BUCKET_KEY }}
-      lock_dynamodb_name: ${{ vars.LOCK_DYNAMODB_NAME }}
+      working_directory: "base-infra"
       region: ${{ vars.REGION }}
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}

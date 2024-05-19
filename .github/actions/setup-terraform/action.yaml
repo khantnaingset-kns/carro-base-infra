@@ -1,0 +1,58 @@
+name: "Terraform Setup"
+description: "Terraform Setup Composite Action"
+inputs:
+  working_directory:
+    description: "Working dir for Terraform"
+    required: true
+  tfc_token:
+    description: "TFC API Token"
+    required: true
+outputs:
+  init_outcome:
+    description: "Terraform init outcome"
+    value:  ${{ steps.init.outcome  }}
+  fmt_outcome:
+    description: "Terraform fmt outcome"
+    value: ${{ steps.init.outcome  }}
+  validate_outcome:
+    description: "Terraform validate outcome"
+    value: ${{ steps.validate.outcome }}
+  tfsec_outcome:
+    description: "Terraform tfsec check outcome"
+    value: ${{ steps.tfsec.outcome }}
+
+runs:
+  using: composite
+  steps:
+
+    - name: Setup Terraform
+      id: setup
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.8.2"
+        cli_config_credentials_token: ${{ inputs.tfc_token }}
+
+    - name: Terraform Init
+      shell: bash
+      id: init
+      run: >
+        terraform init
+      working-directory: ${{ inputs.working_directory }}
+
+    - name: Terraform Validate
+      shell: bash
+      id: validate
+      run: >
+        terraform validate
+
+    - name: Terraform format
+      shell: bash
+      id: fmt
+      run: >
+        terraform fmt -recursive
+
+    - name: Security Scan with TFSec
+      id: tfsec
+      uses: aquasecurity/tfsec-action@v1.0.0
+      with:
+        soft_fail: true
