@@ -8,6 +8,10 @@ on:
 
 jobs:
   terraform:
+    permissions:
+      contents: read
+      pull-requests: write
+      
     name: "Base Infra"
     uses: ./.github/workflows/tf-change-management.yaml
     with:
