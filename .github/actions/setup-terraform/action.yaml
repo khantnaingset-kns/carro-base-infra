@@ -36,21 +36,21 @@ runs:
     - name: Terraform Init
       shell: bash
       id: init
-      run: >
+      run: |
         terraform init
       working-directory:  ${{ inputs.working_directory }}
 
     - name: Terraform Validate
       shell: bash
       id: validate
-      run: >
+      run: |
         terraform validate
       working-directory:  ${{ inputs.working_directory }}
 
     - name: Terraform format
       shell: bash
       id: fmt
-      run: >
+      run: |
         terraform fmt -recursive
       
 
