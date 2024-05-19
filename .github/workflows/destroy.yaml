@@ -1,4 +1,4 @@
-name: Destroy Resources Workflow
+name: "Destroy Resources Workflow"
 
 on: workflow_dispatch
 
