@@ -6,9 +6,22 @@ on:
       working_directory:
         required: true
         type: string
+      region:
+        required: true
+        type: string
+
     secrets:
+      aws_access_key_id:
+        required: true
+      aws_secret_key_id:
+        required: true
       tfc_token:
         required: true
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
+  REGION: ${{ inputs.region }}
 
 jobs:
   terraform:
