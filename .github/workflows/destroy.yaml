@@ -12,7 +12,7 @@ jobs:
       contents: read
       pull-requests: write
 
-    name: "CD"
+    name: "CD Applicatio Infra"
     uses: ./.github/workflows/tf-destroy.yaml
     with:
       working_directory: "application-infra"
@@ -30,7 +30,7 @@ jobs:
       contents: read
       pull-requests: write
 
-    name: "CD"
+    name: "CD Base Infra"
     uses: ./.github/workflows/tf-destroy.yaml
     with:
       working_directory: "base-infra"
