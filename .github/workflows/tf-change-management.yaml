@@ -21,8 +21,6 @@ on:
       aws_region:
         required: true
 
-
-
 jobs:
   terraform:
     name: "TF Change Management"
@@ -42,7 +40,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.aws_secret_key_id }}
           aws-region: ${{ secrets.aws_region }}
 
-
       - name: Terraform Setup
         uses: ./.github/actions/setup-terraform
         id: setup
@@ -53,39 +50,11 @@ jobs:
           lock_dynamodb_name: ${{ secrets.lock_dynamodb_name }}
           aws_region: ${{ secrets.aws_region }}
 
-
       - name: Terraform Plan
         id: plan
         run: >
           terraform plan -no-color -input=false
         continue-on-error: false
-
-      - name: Setup Warning Comment
-        uses: actions/github-script@v7
-        if: github.base_ref == 'main'
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            })
-            const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Warning: ')
-            })
-
-            const output = `## Warning: Merging this PR mean it will deploy the planned resources`
-
-
-            if (!botComment) {
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: output
-              })
-            }
 
       - name: Setup Plan Comments
         uses: actions/github-script@v7
@@ -104,7 +73,11 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
             })
 
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
+            const warningMessage =  "## Warning: Merging this PR means it will deploy the planned resources.";
+
+            const planMessage = `
+            ## \`${{ inputs.working_directory }}`\ Plan Results
+            #### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.setup.outputs.init_outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.setup.outputs.validate_outcome }}\`
             #### Terraform Security Check 🛡️\`${{ steps.setup.outputs.tfsec_outcome }}\`
@@ -120,6 +93,8 @@ jobs:
             </details>
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working_directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            const output = github.base_ref === 'main' ? planMessage : `${warningMessage}\n\n${planMessage}`
 
             if (botComment) {
               github.rest.issues.updateComment({
