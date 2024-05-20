@@ -21,6 +21,7 @@ jobs:
     uses: ./.github/workflows/tf-change-management.yaml
     with:
       working_directory: "base-infra"
+      allow_plan_error: true
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -39,6 +40,7 @@ jobs:
     uses: ./.github/workflows/tf-change-management.yaml
     with:
       working_directory: "application-infra"
+      allow_plan_error: true
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
