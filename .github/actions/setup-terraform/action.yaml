@@ -13,12 +13,6 @@ inputs:
   lock_dynamodb_name:
     description: "State lock DynamoDB Name"
     required: true
-  aws_access_key_id:
-    description: "AWS Access Key Id"
-    required: true
-  aws_secret_key_id:
-    description: "AWS Secret Key Id"
-    required: true
   aws_region:
     description: "AWS Region"
     required: true
