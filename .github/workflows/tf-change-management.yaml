@@ -77,7 +77,7 @@ jobs:
             const warningMessage =  "## Warning: Merging this PR means it will deploy the planned resources.";
 
             const planMessage = `
-            ## \`${{ inputs.working_directory }}`\ Plan Results
+            ## \`${{ inputs.working_directory }}\` Plan Results
             #### Terraform Format and Style 🖌\`${{ steps.setup.outputs.fmt_outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.setup.outputs.init_outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.setup.outputs.validate_outcome }}\`
