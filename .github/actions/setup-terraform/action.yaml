@@ -4,8 +4,17 @@ inputs:
   working_directory:
     description: "Working dir for Terraform"
     required: true
-  tfc_token:
-    description: "TFC API Token"
+  bucket_name:
+    description: "State Store S3 Bucket Name"
+    required: true
+  bucket_key:
+    description: "State Store S3 Bucket Key"
+    required: true
+  lock_dynamodb_name:
+    description: "State lock DynamoDB Name"
+    required: true
+  aws_region:
+    description: "AWS Region"
     required: true
 outputs:
   init_outcome:
@@ -21,6 +30,7 @@ outputs:
     description: "Terraform tfsec check outcome"
     value: ${{ steps.tfsec.outcome }}
 
+
 runs:
   using: composite
   steps:
@@ -30,14 +40,17 @@ runs:
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.8.2"
-        cli_config_credentials_token: ${{ inputs.tfc_token }}
   
 
     - name: Terraform Init
       shell: bash
       id: init
       run: |
-        terraform init
+        terraform init \
+          -backend-config="bucket=${{ inputs.bucket_name }}" \
+          -backend-config="key=${{ inputs.bucket_key }}" \
+          -backend-config="region=${{ inputs.aws_region }}" \
+          -backend-config="dynamodb_table=${{ inputs.lock_dynamodb_name }}"
       working-directory:  ${{ inputs.working_directory }}
 
     - name: Terraform Validate
