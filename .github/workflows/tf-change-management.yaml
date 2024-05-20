@@ -61,6 +61,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          WORK_DIR: "${{ inputs.working_directory }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -70,7 +71,7 @@ jobs:
               issue_number: context.issue.number,
             })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('\`${{ inputs.working_directory }}`\ Plan Results')
+              return comment.user.type === 'Bot' && comment.body.includes(`${ process.env.WORK_DIR } Plan Results`);
             })
 
             const warningMessage =  "## Warning: Merging this PR means it will deploy the planned resources.";
@@ -94,7 +95,7 @@ jobs:
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working_directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
-            const output = github.base_ref === 'main' ? planMessage : `${warningMessage}\n\n${planMessage}`
+            # const output = github.base_ref === 'main' ? planMessage : `${warningMessage}\n\n${planMessage}`
 
             if (botComment) {
               github.rest.issues.updateComment({
