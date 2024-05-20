@@ -22,10 +22,6 @@ on:
         required: true
 
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_key_id }}
-  REGION: ${{ inputs.region }}
 
 jobs:
   terraform:
@@ -39,6 +35,13 @@ jobs:
       - name: Checkout the code to the runner
         uses: actions/checkout@v4
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_key_id }}
+          aws-region: ${{ secrets.aws_region }}
+
 
       - name: Terraform Setup
         uses: ./.github/actions/setup-terraform
@@ -48,7 +51,7 @@ jobs:
           bucket_name: ${{ secrets.bucket_name }}
           bucket_key: ${{ secrets.bucket_key }}
           lock_dynamodb_name: ${{ secrets.lock_dynamodb_name }}
-          aws_region: ${{ inputs.region }}
+          aws_region: ${{ secrets.aws_region }}
 
 
       - name: Terraform Plan
