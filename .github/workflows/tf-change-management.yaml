@@ -95,7 +95,7 @@ jobs:
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ inputs.working_directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
-            # const output = github.base_ref === 'main' ? planMessage : `${warningMessage}\n\n${planMessage}`
+            const output = github.base_ref === 'main' ? planMessage : `${warningMessage}\n\n${planMessage}`
 
             if (botComment) {
               github.rest.issues.updateComment({
