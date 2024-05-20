@@ -16,8 +16,10 @@ jobs:
     uses: ./.github/workflows/tf-destroy.yaml
     with:
       working_directory: "base-infra"
-      region: ${{ vars.REGION }}
     secrets:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_key_id: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      tfc_token: ${{ secrets.TFC_API_TOKEN }}
+      aws_region: ${{ secrets.AWS_REGION }}
+      bucket_name: ${{ secrets.BUCKET_NAME }}
+      bucket_key: ${{ secrets.INFA_BUCKET_KEY }}
+      lock_dynamodb_name: ${{ secrets.LOCK_DYNAMODB_NAME }}
