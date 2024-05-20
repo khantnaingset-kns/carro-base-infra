@@ -13,13 +13,19 @@ inputs:
   lock_dynamodb_name:
     description: "State lock DynamoDB Name"
     required: true
+  aws_access_key_id:
+    description: "AWS Access Key Id"
+    required: true
+  aws_secret_key_id:
+    description: "AWS Secret Key Id"
+    required: true
   aws_region:
     description: "AWS Region"
     required: true
 outputs:
   init_outcome:
     description: "Terraform init outcome"
-    value:  ${{ steps.init.outcome  }}
+    value: ${{ steps.init.outcome  }}
   fmt_outcome:
     description: "Terraform fmt outcome"
     value: ${{ steps.init.outcome  }}
@@ -30,17 +36,21 @@ outputs:
     description: "Terraform tfsec check outcome"
     value: ${{ steps.tfsec.outcome }}
 
-
 runs:
   using: composite
   steps:
-
     - name: Setup Terraform
       id: setup
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: "1.8.2"
-  
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ inputs.aws_access_key_id }}
+        aws-secret-access-key: ${{ inputs.aws_secret_key_id }}
+        aws-region: ${{ inputs.aws_region }}
 
     - name: Terraform Init
       shell: bash
@@ -51,25 +61,23 @@ runs:
           -backend-config="key=${{ inputs.bucket_key }}" \
           -backend-config="region=${{ inputs.aws_region }}" \
           -backend-config="dynamodb_table=${{ inputs.lock_dynamodb_name }}"
-      working-directory:  ${{ inputs.working_directory }}
+      working-directory: ${{ inputs.working_directory }}
 
     - name: Terraform Validate
       shell: bash
       id: validate
       run: |
         terraform validate
-      working-directory:  ${{ inputs.working_directory }}
+      working-directory: ${{ inputs.working_directory }}
 
     - name: Terraform format
       shell: bash
       id: fmt
       run: |
         terraform fmt -recursive
-      
 
     - name: Security Scan with TFSec
       id: tfsec
       uses: aquasecurity/tfsec-action@v1.0.0
       with:
         soft_fail: true
-      
