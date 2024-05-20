@@ -1,5 +1,4 @@
 project_name     = "carro"
-vpc_name         = "primary-vpc"
 environment      = "dev"
 region           = "us-east-1"
 eks_cluster_name = "carro-k8s-cluster"

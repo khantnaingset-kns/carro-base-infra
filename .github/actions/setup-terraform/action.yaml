@@ -29,6 +29,10 @@ outputs:
   tfsec_outcome:
     description: "Terraform tfsec check outcome"
     value: ${{ steps.tfsec.outcome }}
+  tfsec_stdout:
+    description: "Terraform tfsec check stdout"
+    value: ${{ steps.tfsec.outputs.stdout }}
+
 
 runs:
   using: composite
