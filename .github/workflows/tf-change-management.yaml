@@ -70,7 +70,7 @@ jobs:
               issue_number: context.issue.number,
             })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+              return comment.user.type === 'Bot' && comment.body.includes('\`${{ inputs.working_directory }}`\ Plan Results')
             })
 
             const warningMessage =  "## Warning: Merging this PR means it will deploy the planned resources.";
